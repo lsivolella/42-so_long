@@ -2,4 +2,4 @@
 Makefile_old
 so_long
 *.o
-main.c
+#main.c

@@ -6,7 +6,7 @@
 #    By: lgoncalv <lgoncalv@student.42sp.org.br>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/04/24 11:45:10 by lgoncalv          #+#    #+#              #
-#    Updated: 2022/05/21 11:31:50 by lgoncalv         ###   ########.fr        #
+#    Updated: 2022/05/22 12:46:51 by lgoncalv         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,11 +15,10 @@ CC				= gcc
 
 # FLAGS
 CFLAGS			= -Wall -Wextra -Werror
+CFLAGS_DEBUG	= -Wall -Wextra -Werror -fsanitize=leak -static-libasan
 FTFLAGS			= -L $(LIBS_PATH) -lft
-#MLXFLAGS		= -Lmlx_linux -Ilmlx -lXext -lX11 # TODO: review this
 MLXFLAGS		= -L $(MLX_PATH) -lmlx -lXext -lX11
 INCLUDES		= -I $(INCLUDES_PATH) -I $(MLX_PATH)
-#INCLUDES		= -I $(INCLUDES_PATH)
 
 # PATHS
 INCLUDES_PATH	= ./includes
@@ -42,7 +41,13 @@ SO_LONG			= so_long.h
 # SOURCES
 SRCS			= main.c \
 				sl_error_handler.c \
-				vector2.c \
+				sl_initializers.c \
+				sl_inputs.c \
+				sl_map.c \
+				sl_movement.c \
+				sl_render.c \
+				sl_trgb.c \
+				sl_vector2.c \
 
 SRCS			:= $(addprefix $(SOURCES_PATH)/,$(SRCS))
 SO_LONG			:= $(addprefix $(INCLUDES_PATH)/,$(SO_LONG))
@@ -53,7 +58,8 @@ OBJS			= $(subst $(SOURCES_PATH), $(OBJS_PATH), $(SRCS:%.c=%.o))
 
 # PATTERN RULE
 $(OBJS_PATH)/%.o : $(SOURCES_PATH)/%.c
-	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
+		$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
+# $(CC) $(CFLAGS) $(INCLUDES) -L lib -c $< -o $@
 # shows make how to compile .c files into .o files
 # included link to include and mlx path directories
 
@@ -62,7 +68,6 @@ all:	clear_console $(NAME)
 # rule on how to create the file associated to NAME variable (so_long)
 $(NAME): $(MLX) $(OBJS)
 	$(CC) $(CFLAGS) $(INCLUDES) $(OBJS) $(LIBFT) $(MLXFLAGS) -o $@
-# $(CC) $(CFLAGS) $(OBJS) $(INCLUDES) $(LIBFT) $(MLX) $(MLXFLAGS) -o $@
 # TODO: review this command -> how is this working, exactly?
 
 $(MLX):
@@ -93,7 +98,10 @@ rebonus: fclean bonus
 manminilib:
 	man $(MINILIBX_PATH)/man/$(arg)
 
-.PHONY:	all clean fclean re run_clean
+valgrind:
+	valgrind -v --leak-check=full --show-leak-kinds=all ./so_long
+
+.PHONY:	all clean fclean re run_clean valgrind
 
 # to review:
 # $< (takes first argument of dependency?)
