@@ -6,43 +6,62 @@
 /*   By: lgoncalv <lgoncalv@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/09 17:21:42 by lgoncalv          #+#    #+#             */
-/*   Updated: 2022/05/22 12:32:57 by lgoncalv         ###   ########.fr       */
+/*   Updated: 2022/06/18 18:00:18 by lgoncalv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "so_long.h"
 
-void	game_data_setup(t_game *game)
+static int	game_logic(t_game *game, t_map *map, t_obj player)
 {
-	game->mlx_ptr = mlx_init();
-	if (game->mlx_ptr == NULL)
-		kill_program(game, e_mlx_init);
-	game->win_ptr = mlx_new_window(game->mlx_ptr,
-			WIN_WIDTH, WIN_HEIGHT, WIN_NAME);
-	if (game->win_ptr == NULL)
-		kill_program(game, e_window_init);
-	game->img.mlx_img = mlx_new_image(game->mlx_ptr, WIN_WIDTH, WIN_HEIGHT);
-	if (game->img.mlx_img == NULL)
-		kill_program(game, e_image_init);
-	game->img.addr = mlx_get_data_addr(game->img.mlx_img, &game->img.bpp,
-		&game->img.line_len, &game->img.endian);
+	t_vector	player_grid_center;
+
+	player_grid_center = get_obj_grid_center(player);
+	if (map->map[player_grid_center.y]
+		[player_grid_center.x] == MAP_COLLECTIBLE)
+	{
+		game->map.n_collectibles--;
+		map->map[player_grid_center.y][player_grid_center.x] = MAP_FLOOR;
+	}
+	else if (map->map[player_grid_center.y]
+		[player_grid_center.x] == MAP_EXIT
+		&& game->map.n_collectibles == 0)
+	{
+		kill_program(game, e_none);
+	}
+	game->player.move_dir = vector_zero();
+	return (e_none);
 }
 
-int	main(void)
+static int	game_loop(t_game *game)
+{
+	handle_map_rendering(game);
+	game_logic(game, &game->map, game-> player);
+	return (0);
+}
+
+static t_game	initialize_structs(void)
 {
 	t_game	game;
 
-	printf("Hello!\n");
-	printf("Libft test: %s", ft_strchr("Testing\n", 'T'));
-	initialize_game_data(&game);
-	game_data_setup(&game);
-	mlx_loop_hook(game.mlx_ptr, &render, &game);
+	ft_memset(&game, '\0', sizeof(t_game));
+	ft_memset(&game.img, '\0', sizeof(t_img));
+	ft_memset(&game.map, '\0', sizeof(t_map));
+	ft_memset(&game.player, '\0', sizeof(t_obj));
+	ft_memset(&game.win_size, '\0', sizeof(t_vector));
+	return (game);
+}
+
+int	main(int argc, char **argv)
+{
+	t_game	game;
+
+	game = initialize_structs();
+	handle_map(argc, argv, &game);
+	setup_game(&game);
+	mlx_loop_hook(game.mlx_ptr, &game_loop, &game);
 	mlx_hook(game.win_ptr, on_destroy, mask_no_event, &close_window, &game);
 	mlx_hook(game.win_ptr, on_keydown, mask_key_press, &handle_keypress, &game);
-	//mlx_hook(game.win_ptr, on_keydown, mask_no_event, &process_keypress, &game);
-	//mlx_loop_hook(game.mlx_ptr, &process_keypress, &game);
 	mlx_loop(game.mlx_ptr);
 	return (0);
-	// gcc ./sources/main.c -lft -lmlx -lXext -lX11 -o test -I includes -I ./libs/minilibx -L ./libs -L ./libs/minilibx
-	// gcc ./sources/*.c -lft -lmlx -lXext -lX11 -o test -fsanitize=leak -g -I includes -I ./libs/minilibx -L ./libs -L ./libs/minilibx && ./test
 }

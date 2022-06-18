@@ -6,41 +6,60 @@
 /*   By: lgoncalv <lgoncalv@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/21 10:11:16 by lgoncalv          #+#    #+#             */
-/*   Updated: 2022/05/22 15:43:56 by lgoncalv         ###   ########.fr       */
+/*   Updated: 2022/05/29 17:34:56 by lgoncalv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "so_long.h"
 
-void	initialize_player(t_game *game)
+t_vector2	initialize_vector2(void)
 {
-	t_obj	player;
+	t_vector2	vector;
 
-	player.move_dir = VECTOR2_ZERO;
-	player.move_speed = PLAYER_SPEED;
-	player.rect = (t_rect)
-	{
-		(t_vector2){0, WIN_HEIGHT - 100},
-		100,
-		100,
-		create_trgb(255, 0, 0, 0)
-	};
-	game->player = player;
+	ft_memset(&vector, '\0', sizeof(t_vector2));
+	return (vector);
 }
 
-void	initialize_img(t_game *game)
+t_map	initialize_map(void)
 {
-	game->img.mlx_img = NULL;
-	game->img.addr = NULL;
-	game->img.bpp = 0;
-	game->img.line_len = 0;
-	game->img.endian = 0;
+	t_map	map;
+
+	ft_memset(&map, '\0', sizeof(t_map));
+	return (map);
 }
 
-void	initialize_game_data(t_game *game)
+t_obj	initialize_obj(void)
 {
-	game->mlx_ptr = NULL;
-	game->win_ptr = NULL;
-	initialize_img(game);
-	initialize_player(game);
+	t_obj	obj;
+
+	ft_memset(&obj, '\0', sizeof(t_obj));
+	return (obj);
+}
+
+t_rect	initialize_rect(void)
+{
+	t_rect	rect;
+
+	ft_memset(&rect, '\0', sizeof(t_rect));
+	return (rect);
+}
+
+t_img	initialize_img(void)
+{
+	t_img	img;
+
+	ft_memset(&img, '\0', sizeof(t_img));
+	return (img);
+}
+
+t_game	initialize_game(void)
+{
+	t_game	game;
+	
+	ft_memset(&game, '\0', sizeof(t_game));
+	ft_memset(&game.img, '\0', sizeof(t_img));
+	ft_memset(&game.map, '\0', sizeof(t_map));
+	ft_memset(&game.player, '\0', sizeof(t_obj));
+	ft_memset(&game.win_size, '\0', sizeof(t_vector2));
+	return (game);
 }

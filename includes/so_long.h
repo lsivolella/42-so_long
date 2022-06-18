@@ -6,7 +6,7 @@
 /*   By: lgoncalv <lgoncalv@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/09 17:20:32 by lgoncalv          #+#    #+#             */
-/*   Updated: 2022/05/22 15:32:34 by lgoncalv         ###   ########.fr       */
+/*   Updated: 2022/06/18 17:56:46 by lgoncalv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,52 +16,65 @@
 # include <stdio.h>
 # include <stdlib.h>
 # include <math.h>
+# include <fcntl.h>
+# include <sys/resource.h> // for RLIMIT_NOFILE
 # include "error_handler.h"
 # include "game_defs.h"
 # include "key_mapping.h"
 # include "libft.h"
 # include "mlx.h"
 
+# define BUFFER_SIZE 1000
+
 /* Prototypes */
 
-/* sl_error_handler.c */
-void	get_error_arg(t_error_arg e_arg);
-void	kill_program(t_game *game, int e_code);
+/* get_next_line */
+int			get_next_line(int fd, char **line);
 
-/* sl_initializers.c */
-void	initialize_player(t_game *game);
-void	initialize_img(t_game *game);
-void	initialize_game_data(t_game *game);
+/* sl_error_handler.c */
+void		get_error_arg(t_error_arg e_arg);
+void		free_map(char **map);
+void		soft_kill_program(int e_code);
+void		kill_program_on_validate(t_map *map, int e_code);
+void		kill_program(t_game *game, int e_code);
+
+/* sl_grid */
+t_vector	world_to_grid_pos(t_vector pos);
+t_vector	get_obj_world_center(t_obj obj);
+t_vector	get_obj_grid_center(t_obj obj);
+void		print_map(t_map *map);
 
 /* sl_inputs.c */
-int	close_window(t_game *game);
-int	process_keypress(t_game *game);
-void	handle_player_input(t_game *game, t_vector2 newPos);
-int	handle_keypress(int keycode, t_game *game);
+int			close_window(t_game *game);
+int			handle_keypress(int keycode, t_game *game);
 
-/* sl_map.c */
+/* sl_map_read.c */
+void		handle_map(int argc, char **argv, t_game *game);
+
+/* sl_map_validate.c */
+void		validate_map(t_map *map);
 
 /* sl_movement.c */
-t_bool	check_window_bounds(t_obj *obj);
-int	process_obj_movement(t_game *game, t_obj *obj);
+int			process_obj_movement(t_game *game, t_obj *obj);
 
 /* sl_render.c */
-void	render_pixel_put(t_img *img, int x, int y, int color);
-void	render_background(t_img *img, int color);
-int	render_rect(t_img *img, t_rect rect);
-int	render(t_game *game);
+t_img		create_sprite(t_game *game, t_img *src, char *address);
+int			handle_map_rendering(t_game *game);
 
-/* sl_trgb.c */
-int	create_trgb(int t, int r, int g, int b);
-int	get_t(int trgb);
-int	get_r(int trgb);
-int	get_g(int trgb);
-int	get_b(int trgb);
+/* sl_setups.c */
+void		setup_game(t_game *game);
 
-/* sl_vector2_1.c */
-t_vector2	add_vector(t_vector2 vector, t_vector2 new);
-t_vector2	add_x(t_vector2 vector, int x);
-t_vector2	add_y(t_vector2 vector, int y);
-t_vector2	multi_xy(t_vector2 vector, int factor);
+/* sl_vector_1.c */
+t_vector	add_vector(t_vector vector, t_vector new);
+t_vector	add_x(t_vector vector, int x);
+t_vector	add_y(t_vector vector, int y);
+t_vector	multi_vector(t_vector vector, int factor);
+t_vector	multi_xy(t_vector vector, int x_factor, int y_factor);
 
+/* sl_vector_2.c */
+t_vector	vector_zero(void);
+t_vector	vector_left(void);
+t_vector	vector_up(void);
+t_vector	vector_right(void);
+t_vector	vector_down(void);
 #endif

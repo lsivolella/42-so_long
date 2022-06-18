@@ -6,7 +6,7 @@
 /*   By: lgoncalv <lgoncalv@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/22 10:15:08 by lgoncalv          #+#    #+#             */
-/*   Updated: 2022/05/22 15:45:44 by lgoncalv         ###   ########.fr       */
+/*   Updated: 2022/06/18 17:56:46 by lgoncalv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,40 +18,28 @@ int	close_window(t_game *game)
 	return (0);
 }
 
-int	process_keypress(t_game *game)
-{
-	process_obj_movement(game, &game->player);
-	return (0);
-}
-
-void	handle_player_input(t_game *game, t_vector2 newPos)
-{
-	game->player.move_dir = multi_xy(newPos, PLAYER_SPEED);
-}
-
 int	handle_keypress(int keycode, t_game *game)
 {
-	printf("Key Code: %d\n", keycode);
 	if (keycode == key_esc)
 	{
 		kill_program(game, e_none);
 	}
-	if (keycode == key_left)
+	if (keycode == key_left || keycode == key_a)
 	{
-		game->player.move_dir = VECTOR2_LEFT;
+		game->player.move_dir = vector_left();
 	}
-	if (keycode == key_up)
+	if (keycode == key_up || keycode == key_w)
 	{
-		game->player.move_dir = VECTOR2_DOWN;
+		game->player.move_dir = vector_down();
 	}
-	if (keycode == key_right)
+	if (keycode == key_right || keycode == key_d)
 	{
-		game->player.move_dir = VECTOR2_RIGHT;
+		game->player.move_dir = vector_right();
 	}
-	if (keycode == key_down)
+	if (keycode == key_down || keycode == key_s)
 	{
-		game->player.move_dir = VECTOR2_UP;
+		game->player.move_dir = vector_up();
 	}
-	process_keypress(game);
+	process_obj_movement(game, &game->player);
 	return (0);
 }

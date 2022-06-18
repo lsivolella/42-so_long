@@ -1,0 +1,62 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    Makefile_old                                       :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: lgoncalv <lgoncalv@student.42sp.org.br>    +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2022/04/09 17:22:09 by lgoncalv          #+#    #+#              #
+#    Updated: 2022/05/14 11:00:32 by lgoncalv         ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
+cc				= clang
+
+CFLAGS			= -Wall -Wextra -Werror
+
+MLXFLAGS		= -Lmlx_linux -Ilmlx -lXext -lX11
+
+RM				= /bin/rm -f
+
+NAME			= so_long
+
+SRCS			= main.c
+
+OBJS			= $(SRCS:.c=.o)
+
+MINILIBX_PATH	= ./lib/minilibx
+MINILIBX		= $(MINILIBX_PATH)/libmlx.a
+
+%.o : %.c
+				@$(CC) -c $< -o $(<:.c=.o)
+
+all:			$(NAME)
+
+$(NAME):		$(OBJS) $(MINILIBX)
+				$(CC) $(CFLAGS) $(OBJS) $(MINILIBX) $(MLXFLAGS) -o $(NAME)
+
+$(MINILIBX):
+				$(MAKE) -C $(MINILIBX_PATH)
+
+bonus:			all
+
+clean:
+				$(MAKE) -C $(MINILIBX_PATH) clean
+				@$(RM) $(OBJS)
+
+fclean:			clean
+				$(MAKE) -C $(MINILIBX_PATH) fclean
+				@$(RM) $(NAME)
+
+re:				fclean all
+
+rebonus:		fclean bonus
+
+run_clean:		clear
+				$(CC) $(SRCS)
+
+clear:
+				clear
+
+manminilib:
+				man $(MINILIBX_PATH)/man/$(arg)

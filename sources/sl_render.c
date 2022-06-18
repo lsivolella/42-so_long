@@ -6,78 +6,89 @@
 /*   By: lgoncalv <lgoncalv@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/21 13:55:49 by lgoncalv          #+#    #+#             */
-/*   Updated: 2022/05/22 12:31:26 by lgoncalv         ###   ########.fr       */
+/*   Updated: 2022/06/18 17:55:28 by lgoncalv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "so_long.h"
+#include "so_long.h"
 
-void	render_pixel_put(t_img *img, int x, int y, int color)
+t_img	create_sprite(t_game *game, t_img *src, char *address)
 {
-	int		i;
-	char	*pixel;
+	t_img	img;
 
-	i = img->bpp - 8;
-	pixel = img->addr + (y * img->line_len + x * (img->bpp / 8));
-	while (i >= 0)
+	img = *src;
+	img.mlx_img = mlx_xpm_file_to_image(game->mlx_ptr, address,
+			&img.size.x, &img.size.y);
+	img.pixels = mlx_get_data_addr(img.mlx_img, &img.bpp,
+			&img.line_len, &img.bpp);
+	return (img);
+}
+
+static void	render_player(t_game *game, t_obj *player)
+{
+	if (player->move_dir.x != 0 || player->move_dir.y != 0)
+		mlx_destroy_image(game->mlx_ptr, player->sprite.mlx_img);
+	if (player->move_dir.x != 0 && player->move_dir.y == 0)
 	{
-		if (img->endian != 0)
-			*pixel++ = (color >> i) & 0xFF;
-		else
-			*pixel++ = (color >> (img->bpp - 8 - i)) & 0xFF;
-		i -= 8;
+		if (player->move_dir.x > 0)
+			player->sprite = create_sprite(game, &player->sprite,
+					S_PLAYER_RIGHT);
+		else if (player->move_dir.x < 0)
+			player->sprite = create_sprite(game, &player->sprite,
+					S_PLAYER_LEFT);
+	}
+	else if (player->move_dir.x == 0 && player->move_dir.y != 0)
+	{
+		if (player->move_dir.y > 0)
+			player->sprite = create_sprite(game, &player->sprite,
+					S_PLAYER_DOWN);
+		else if (player->move_dir.y < 0)
+			player->sprite = create_sprite(game, &player->sprite, S_PLAYER_UP);
+	}
+	mlx_put_image_to_window(game->mlx_ptr, game->win_ptr,
+		player->sprite.mlx_img, player->pos.x, player->pos.y);
+}
+
+static void	render_map(t_game *game, t_map *map, t_vector grid)
+{
+	if (map->map[grid.y][grid.x] == MAP_WALL)
+	{
+		mlx_put_image_to_window(game->mlx_ptr, game->win_ptr,
+			map->wall.mlx_img, grid.x * GRID_X, grid.y * GRID_Y);
+	}
+	else if (map->map[grid.y][grid.x] == MAP_FLOOR
+		|| map->map[grid.y][grid.x] == MAP_PLAYER)
+	{
+		mlx_put_image_to_window(game->mlx_ptr, game->win_ptr,
+			map->floor.mlx_img, grid.x * GRID_X, grid.y * GRID_Y);
+	}
+	else if (map->map[grid.y][grid.x] == MAP_COLLECTIBLE)
+	{
+		mlx_put_image_to_window(game->mlx_ptr, game->win_ptr,
+			map->collectible.mlx_img, grid.x * GRID_X, grid.y * GRID_Y);
+	}
+	else if (map->map[grid.y][grid.x] == MAP_EXIT)
+	{
+		mlx_put_image_to_window(game->mlx_ptr, game->win_ptr,
+			map->exit.mlx_img, grid.x * GRID_X, grid.y * GRID_Y);
 	}
 }
 
-void	render_background(t_img *img, int color)
+int	handle_map_rendering(t_game *game)
 {
-	int	i;
-	int	j;
+	t_vector	grid;
 
-	i = 0;
-	while (i < WIN_HEIGHT)
-	{
-		j = 0;
-		while(j < WIN_WIDTH)
-			render_pixel_put(img, j++, i, color);
-		++i;
-	}
-}
-
-int	render_rect(t_img *img, t_rect rect)
-{
-	int	i;
-	int	j;
-
-	i = rect.pos.y;
-	while (i < rect.pos.y + rect.height)
-	{
-		j = rect.pos.x;
-		while (j < rect.pos.x + rect.width)
-			render_pixel_put(img, j++, i, rect.color);
-		++i;
-	}
-	return (e_none);
-}
-
-int	render(t_game *game)
-{
+	grid = (t_vector){-1, -1};
 	if (game->win_ptr == NULL)
 		kill_program(game, e_window_null);
-	render_background(&game->img, WHITE_PIXEL);
-	render_rect(&game->img, (t_rect)
+	while (game->map.map[++grid.y])
 	{
-		(t_vector2)
-	{
-		WIN_WIDTH - 100,
-		WIN_HEIGHT - 100
-	},
-		100,
-		100,
-		GREEN_PIXEL
-	});
-	render_rect(&game->img, game->player.rect);
-	//printf("Rendering");
-	mlx_put_image_to_window(game->mlx_ptr, game->win_ptr, game->img.mlx_img, 0, 0);
+		while (game->map.map[grid.y][++grid.x])
+		{
+			render_map(game, &game->map, grid);
+			render_player(game, &game->player);
+		}
+		grid.x = -1;
+	}
 	return (e_none);
 }
