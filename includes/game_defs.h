@@ -6,7 +6,7 @@
 /*   By: lgoncalv <lgoncalv@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/21 09:06:17 by lgoncalv          #+#    #+#             */
-/*   Updated: 2022/06/18 17:55:28 by lgoncalv         ###   ########.fr       */
+/*   Updated: 2022/06/19 11:20:46 by lgoncalv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,10 +40,14 @@
 # define MAP_PLAYER 'P'
 
 /* Sprites */
-# define S_PLAYER_UP "sprites/link/link_up_00.xpm"
-# define S_PLAYER_DOWN "sprites/link/link_down_00.xpm"
-# define S_PLAYER_RIGHT "sprites/link/link_right_00.xpm"
-# define S_PLAYER_LEFT "sprites/link/link_left_00.xpm"
+# define S_PLAYER_UP_00 "sprites/link/link_up_00.xpm"
+# define S_PLAYER_UP_01 "sprites/link/link_up_01.xpm"
+# define S_PLAYER_DOWN_00 "sprites/link/link_down_00.xpm"
+# define S_PLAYER_DOWN_01 "sprites/link/link_down_01.xpm"
+# define S_PLAYER_RIGHT_00 "sprites/link/link_right_00.xpm"
+# define S_PLAYER_RIGHT_01 "sprites/link/link_right_01.xpm"
+# define S_PLAYER_LEFT_00 "sprites/link/link_left_00.xpm"
+# define S_PLAYER_LEFT_01 "sprites/link/link_left_01.xpm"
 # define S_WALL "sprites/wall/wall_00.xpm"
 # define S_FLOOR "sprites/floor/floor_00.xpm"
 # define S_COLLECTIBLE "sprites/collectible/collectible_00.xpm"
@@ -83,8 +87,10 @@ typedef struct s_obj
 {
 	int			move_speed;
 	t_vector	move_dir;
+	t_vector	last_move;
 	t_vector	pos;
 	t_img		sprite;
+	t_bool		switch_sptr;
 }	t_obj;
 
 typedef struct s_map

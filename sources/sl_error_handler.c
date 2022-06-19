@@ -6,7 +6,7 @@
 /*   By: lgoncalv <lgoncalv@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/14 16:07:55 by lgoncalv          #+#    #+#             */
-/*   Updated: 2022/06/18 17:45:10 by lgoncalv         ###   ########.fr       */
+/*   Updated: 2022/06/18 18:50:03 by lgoncalv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ void	get_error_arg(t_error_arg e_arg)
 {
 	if (e_arg == e_none)
 	{
-		ft_putstr_fd("Exited with no errors.\n", 1);
+		ft_putstr_fd("\nExited with no errors.\n", 1);
 		return ;
 	}
 	ft_putstr_fd("Error\n", 1);

@@ -6,7 +6,7 @@
 /*   By: lgoncalv <lgoncalv@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/09 17:21:42 by lgoncalv          #+#    #+#             */
-/*   Updated: 2022/06/18 18:00:18 by lgoncalv         ###   ########.fr       */
+/*   Updated: 2022/06/19 10:40:43 by lgoncalv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ static int	game_logic(t_game *game, t_map *map, t_obj player)
 	{
 		kill_program(game, e_none);
 	}
+	game->player.last_move = game->player.move_dir;
 	game->player.move_dir = vector_zero();
 	return (e_none);
 }
@@ -36,6 +37,7 @@ static int	game_logic(t_game *game, t_map *map, t_obj player)
 static int	game_loop(t_game *game)
 {
 	handle_map_rendering(game);
+	print_moves(game);
 	game_logic(game, &game->map, game-> player);
 	return (0);
 }

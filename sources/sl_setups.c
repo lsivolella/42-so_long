@@ -6,7 +6,7 @@
 /*   By: lgoncalv <lgoncalv@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/28 20:32:11 by lgoncalv          #+#    #+#             */
-/*   Updated: 2022/06/18 17:56:43 by lgoncalv         ###   ########.fr       */
+/*   Updated: 2022/06/19 11:20:25 by lgoncalv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,10 @@ static void	setup_player(t_game *game, t_map *map)
 	t_obj	player;
 
 	player = game->player;
-	player.sprite = create_sprite(game, &player.sprite, S_PLAYER_DOWN);
+	player.sprite = create_sprite(game, &player.sprite, S_PLAYER_DOWN_00);
+	player.switch_sptr = FALSE;
 	player.move_dir = vector_zero();
+	player.last_move = vector_zero();
 	player.pos = multi_xy(map->player_init, GRID_X, GRID_Y);
 	player.move_speed = PLAYER_SPEED;
 	game->player = player;

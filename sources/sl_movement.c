@@ -6,7 +6,7 @@
 /*   By: lgoncalv <lgoncalv@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/22 12:00:08 by lgoncalv          #+#    #+#             */
-/*   Updated: 2022/06/18 18:03:30 by lgoncalv         ###   ########.fr       */
+/*   Updated: 2022/06/19 10:48:20 by lgoncalv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,8 +88,6 @@ int	process_obj_movement(t_game *game, t_obj *obj)
 	{
 		obj->pos = add_vector(obj->pos, obj->move_dir);
 		game->move_counter++;
-		ft_putstr_fd("\rMovements: ", 1);
-		ft_putnbr_fd(game->move_counter, 1);
 	}
 	return (0);
 }

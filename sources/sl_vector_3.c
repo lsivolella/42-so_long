@@ -1,38 +1,38 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   sl_vector_2.c                                      :+:      :+:    :+:   */
+/*   sl_vector_3.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lgoncalv <lgoncalv@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/21 10:06:15 by lgoncalv          #+#    #+#             */
-/*   Updated: 2022/06/18 21:34:27 by lgoncalv         ###   ########.fr       */
+/*   Updated: 2022/06/19 11:12:53 by lgoncalv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "so_long.h"
 
-t_vector	vector_zero(void)
+t_bool	vector_equals(t_vector vector_a, t_vector vector_b)
 {
-	return ((t_vector){0, 0});
+	if (vector_a.x == vector_b.x
+		&& vector_a.y == vector_b.y)
+		return (TRUE);
+	else
+		return (FALSE);
 }
 
-t_vector	vector_left(void)
+void	delay(int milliseconds)
 {
-	return ((t_vector){-1, 0});
-}
+	long	pause;
+	clock_t	now;
+	clock_t	then;
 
-t_vector	vector_up(void)
-{
-	return ((t_vector){0, 1});
-}
-
-t_vector	vector_right(void)
-{
-	return ((t_vector){1, 0});
-}
-
-t_vector	vector_down(void)
-{
-	return ((t_vector){0, -1});
+	pause = milliseconds * (CLOCKS_PER_SEC / 1000);
+	then = clock();
+	now = clock();
+	while ((now - then) < pause)
+	{
+		now = clock();
+	}
+	return ;
 }

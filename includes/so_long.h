@@ -6,7 +6,7 @@
 /*   By: lgoncalv <lgoncalv@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/09 17:20:32 by lgoncalv          #+#    #+#             */
-/*   Updated: 2022/06/18 17:56:46 by lgoncalv         ###   ########.fr       */
+/*   Updated: 2022/06/19 11:19:52 by lgoncalv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@
 # include "key_mapping.h"
 # include "libft.h"
 # include "mlx.h"
+# include <time.h> // for time counter
 
 # define BUFFER_SIZE 1000
 
@@ -64,6 +65,10 @@ int			handle_map_rendering(t_game *game);
 /* sl_setups.c */
 void		setup_game(t_game *game);
 
+/* sl_utils.c */
+void		print_moves(t_game *game);
+char		*get_player_sprite(t_obj *player);
+
 /* sl_vector_1.c */
 t_vector	add_vector(t_vector vector, t_vector new);
 t_vector	add_x(t_vector vector, int x);
@@ -77,4 +82,8 @@ t_vector	vector_left(void);
 t_vector	vector_up(void);
 t_vector	vector_right(void);
 t_vector	vector_down(void);
+
+/* sl_vector_3.c */
+t_bool		vector_equals(t_vector vector_a, t_vector vector_b);
+void		delay(int milliseconds);
 #endif

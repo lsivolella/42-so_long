@@ -6,7 +6,7 @@
 #    By: lgoncalv <lgoncalv@student.42sp.org.br>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/04/24 11:45:10 by lgoncalv          #+#    #+#              #
-#    Updated: 2022/06/18 18:33:05 by lgoncalv         ###   ########.fr        #
+#    Updated: 2022/06/19 11:51:31 by lgoncalv         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -35,12 +35,12 @@ RM				= /bin/rm -f
 
 # NAMES
 NAME			= so_long
+NAME_BONUS		= so_long_bonus
 MLX				= $(MLX_PATH)/libmlx.a
 LIBFT			= $(LIBS_PATH)/libft.a
-SO_LONG			= so_long.h
 
-# SOURCES
-SRCS			= main.c \
+# SOURCES (common, mandatory, bonus)
+SRCS_C			= main.c \
 				get_next_line.c \
 				sl_error_handler.c \
 				sl_grid.c \
@@ -51,13 +51,21 @@ SRCS			= main.c \
 				sl_render.c \
 				sl_setups.c \
 				sl_vector_1.c \
-				sl_vector_2.c
+				sl_vector_2.c \
+				sl_vector_3.c
 
-SRCS			:= $(addprefix $(SOURCES_PATH)/,$(SRCS))
-SO_LONG			:= $(addprefix $(INCLUDES_PATH)/,$(SO_LONG))
+SRCS_M			= sl_utils_mandatory.c
+
+SRCS_B			= sl_utils_bonus.c
+
+SRCS_C			:= $(addprefix $(SOURCES_PATH)/,$(SRCS_C))
+SRCS_M			:= $(addprefix $(SOURCES_PATH)/,$(SRCS_M))
+SRCS_B			:= $(addprefix $(SOURCES_PATH)/,$(SRCS_B))
 
 # OBJECTS
-OBJS			= $(subst $(SOURCES_PATH), $(OBJS_PATH), $(SRCS:%.c=%.o))
+OBJS_C			= $(subst $(SOURCES_PATH), $(OBJS_PATH), $(SRCS_C:%.c=%.o))
+OBJS_M			= $(subst $(SOURCES_PATH), $(OBJS_PATH), $(SRCS_M:%.c=%.o))
+OBJS_B			= $(subst $(SOURCES_PATH), $(OBJS_PATH), $(SRCS_B:%.c=%.o))
 # takes each string associated to SRCS and swaps the characters .c for .o
 
 # PATTERN RULE
@@ -66,14 +74,17 @@ $(OBJS_PATH)/%.o : $(SOURCES_PATH)/%.c
 		$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 # $(CC) $(CFLAGS) $(INCLUDES) -L lib -c $< -o $@
 # shows make how to compile .c files into .o files
-# included link to include and mlx path directories
 
 all:	clear_console $(NAME)
 
 # rule on how to create the file associated to NAME variable (so_long)
-$(NAME): $(LIBFT) $(MLX) $(OBJS)
-	$(CC) $(CFLAGS) $(INCLUDES) $(OBJS) $(LIBFTFLAGS) $(MLXFLAGS) -o $@
-# TODO: review this command -> how is this working, exactly?
+$(NAME): $(LIBFT) $(MLX) $(OBJS_C) $(OBJS_M)
+	$(CC) $(CFLAGS) $(INCLUDES) $(OBJS_C) $(OBJS_M) $(LIBFTFLAGS) $(MLXFLAGS) -o $@
+
+bonus:	clear_console $(NAME_BONUS)
+
+$(NAME_BONUS): $(LIBFT) $(MLX) $(OBJS_C) $(OBJS_B)
+	$(CC) $(CFLAGS) $(INCLUDES) $(OBJS_C) $(OBJS_B) $(LIBFTFLAGS) $(MLXFLAGS) -o $@
 
 $(LIBFT):
 	$(MAKE) -C $(LIBFT_PATH)
@@ -86,10 +97,14 @@ $(MLX):
 clean:
 	$(MAKE) -C $(LIBFT_PATH) clean
 	$(MAKE) -C $(MLX_PATH) clean
-	$(RM) $(OBJS)
+	$(RM) $(OBJS_C)
+	$(RM) -r $(OBJS_M)
+	$(RM) -r $(OBJS_B)
 
 fclean:	clean
+	$(MAKE) -C $(LIBFT_PATH) fclean
 	$(RM) $(NAME)
+	$(RM) $(NAME_BONUS)
 
 re:	fclean all
 
@@ -97,11 +112,15 @@ clear_console:
 	clear
 
 run_clean:	all
-	./so_long ./maps/map_maze.ber
+	./$(NAME) ./maps/map_maze.ber
 	$(MAKE) -C $(LIBFT_PATH) fclean
-	$(RM) $(OBJS)
-	
-bonus:	all
+	$(MAKE) clean
+
+run_clean_bonus:	bonus
+	./$(NAME_BONUS) ./maps/map_maze.ber
+	$(MAKE) clean
+
+bonus:	clear_console $(BONUS)
 
 rebonus: fclean bonus
 
@@ -111,6 +130,9 @@ clone_minilib:
 
 valgrind:
 	valgrind -v --leak-check=full --show-leak-kinds=all --track-origins=yes --tool=memcheck ./so_long ./maps/map_rectangle.ber
+
+valgrind_bonus:
+	valgrind -v --leak-check=full --show-leak-kinds=all --track-origins=yes --tool=memcheck ./so_long_bonus ./maps/map_rectangle.ber
 
 valgrind_no_map:
 	valgrind -v --leak-check=full --show-leak-kinds=all --track-origins=yes --tool=memcheck ./so_long

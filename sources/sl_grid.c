@@ -6,7 +6,7 @@
 /*   By: lgoncalv <lgoncalv@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/18 11:26:59 by lgoncalv          #+#    #+#             */
-/*   Updated: 2022/06/18 18:01:51 by lgoncalv         ###   ########.fr       */
+/*   Updated: 2022/06/19 11:49:29 by lgoncalv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,8 +45,11 @@ void	print_map(t_map *map)
 	ft_putstr_fd("Start printing map\n", 1);
 	while (map->map[++i] != NULL)
 	{
-		printf("Line: %d ->", i);
-		printf("%s\n", map->map[i]);
+		ft_putstr_fd("Line: ", 1);
+		ft_putstr_fd(ft_itoa(i), 1);
+		ft_putstr_fd(" -> ", 1);
+		ft_putstr_fd(map->map[i], 1);
+		ft_putstr_fd("\n", 1);
 	}
 	ft_putstr_fd("Finished printing map\n", 1);
 }
