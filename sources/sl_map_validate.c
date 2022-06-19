@@ -6,7 +6,7 @@
 /*   By: lgoncalv <lgoncalv@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/22 10:18:33 by lgoncalv          #+#    #+#             */
-/*   Updated: 2022/06/18 17:55:28 by lgoncalv         ###   ########.fr       */
+/*   Updated: 2022/06/19 14:08:54 by lgoncalv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ static	int	validate_components(t_map *map)
 			chr = map->map[i][j];
 			if (chr == MAP_PLAYER)
 			{
-				map->player_init = (t_vector){i, j};
+				map->player_init = (t_vector){j, i};
 				map->n_player++;
 			}
 			else if (chr == MAP_COLLECTIBLE)
